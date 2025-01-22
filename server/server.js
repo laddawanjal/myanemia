@@ -8,6 +8,14 @@ const { google } = require("googleapis");
 const app = express();
 const PORT = 3008;
 
+const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
+
+const auth = new google.auth.GoogleAuth({
+    credentials: credentials,
+    scopes: ['https://www.googleapis.com/auth/drive'],
+});
+
+
 app.get('/favicon.ico', (req, res) => res.status(204).end());
 
 // MongoDB Connection
@@ -42,10 +50,6 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 
-
-
-
-
 // Middleware//
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -61,9 +65,7 @@ const REFRESH_TOKEN = '1//04crhN0_E5NoJCgYIARAAGAQSNwF-L9IraJNkd6m6ckdPBrMPtT0D7
 const oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URL);
 oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
-
 const drive = google.drive({ version: "v3", auth: oauth2Client });
-
 
 // Generate ID Function
 const generateId = async () => {
@@ -114,8 +116,6 @@ app.post("/api/submit", async (req, res) => {
   }
 });
 
-
-
 app.post("/api/check-phone", async (req, res) => {
   try {
     const { phone } = req.body;
@@ -157,7 +157,6 @@ app.post('/upload', async (req, res) => {
       return res.status(400).json({ message: "ข้อมูล image หรือ phone ไม่ครบถ้วน" });
   }
   
-
     // ค้นหาผู้ใช้ใน MongoDB
     const user = await User.findOne({ phone });
     if (!user) {
@@ -196,10 +195,6 @@ app.post('/upload', async (req, res) => {
   }
 });
 
-
-
-
-
 // ฟังก์ชันสำหรับตรวจสอบว่ามีโฟลเดอร์อยู่แล้วหรือไม่ ถ้าไม่มีจะสร้างใหม่
 async function getOrCreateFolder(folderName) {
   try {
@@ -226,7 +221,6 @@ async function getOrCreateFolder(folderName) {
   }
 }
 
-
 async function generatePublicURL(fileId) {
   try {
     // ตั้งค่าการอนุญาตให้ไฟล์เข้าถึงได้แบบสาธารณะ
@@ -247,7 +241,6 @@ async function generatePublicURL(fileId) {
     return null;
   }
 }
-
 
 // Endpoint สำหรับอัปโหลดรูปภาพ
 app.post('/upload', async (req, res) => {
@@ -297,9 +290,6 @@ app.post('/upload', async (req, res) => {
   }
 });
 
-
-
-
 async function uploadFile(folderId, base64Data, fileName) {
   try {
       const tempFilePath = path.join(__dirname, fileName);
@@ -325,7 +315,6 @@ async function uploadFile(folderId, base64Data, fileName) {
   }
 }
 
-
 async function renameFile(fileId, newFileName) {
   try {
     const response = await drive.files.update({
@@ -339,10 +328,6 @@ async function renameFile(fileId, newFileName) {
     return null;
   }
 }
-
-
-
-
 
 // เสิร์ฟไฟล์ Static
 app.use(express.static(path.join(__dirname, 'public')));
