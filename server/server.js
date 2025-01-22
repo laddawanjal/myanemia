@@ -15,6 +15,8 @@ const auth = new google.auth.GoogleAuth({
     scopes: ['https://www.googleapis.com/auth/drive'],
 });
 
+require('dotenv').config(); // ใช้ dotenv สำหรับโหลด Environment Variable
+
 const mongoURI = process.env.MONGODB_URI;
 
 mongoose.connect(mongoURI, { 
@@ -27,17 +29,6 @@ mongoose.connect(mongoURI, {
 
 app.get('/favicon.ico', (req, res) => res.status(204).end());
 
-// MongoDB Connection
-mongoose.connect("mongodb+srv://jal065771:jal0621200811@<cluster-name>.mongodb.net/webFormDB?retryWrites=true&w=majority", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-  .then(() => {
-    console.log("Connected to MongoDB");
-  })
-  .catch(err => {
-    console.error("Connection error", err);
-  });
 
 // Schema และ Model
 // Schema และ Model
