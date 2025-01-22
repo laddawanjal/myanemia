@@ -23,12 +23,12 @@ mongoose.connect(mongoURI, {
 })
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Error connecting to MongoDB:', err));
-  
+
 
 app.get('/favicon.ico', (req, res) => res.status(204).end());
 
 // MongoDB Connection
-mongoose.connect("mongodb://127.0.0.1:27017/webFormDB", {
+mongoose.connect("mongodb+srv://jal065771:jal0621200811@<cluster-name>.mongodb.net/webFormDB?retryWrites=true&w=majority", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
