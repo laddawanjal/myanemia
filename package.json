@@ -1,9 +1,11 @@
 {
   "name": "mongodb-web-form",
   "version": "1.0.0",
-  "description": "",
+  "description": "Web application with MongoDB and Google Drive integration",
   "main": "index.js",
   "scripts": {
+  "start": "cd server && node -r dotenv/config server.js"
+,
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -15,5 +17,6 @@
     "fs": "^0.0.1-security",
     "googleapis": "^144.0.0",
     "mongoose": "^8.8.1"
+    
   }
 }
