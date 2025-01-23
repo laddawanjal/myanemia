@@ -1,3 +1,4 @@
+require('dotenv').config(); // ใช้ dotenv สำหรับโหลด Environment Variable
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
@@ -6,32 +7,62 @@ const fs = require("fs");
 const { google } = require("googleapis");
 
 const app = express();
-const PORT = 3008;
+const PORT = 3009;
+require('dotenv').config(); // โหลดไฟล์ .env
 
+if (!process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
+  console.error("Error: GOOGLE_APPLICATION_CREDENTIALS_JSON is not set in .env");
+  process.exit(1); // หยุดโปรแกรมถ้าไม่มีค่า
+}
+
+const mongoURI = "mongodb://jal065771:jal065771@127.0.0.1:27017/webFormDB";
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('Error connecting to MongoDB:', err));
+
+
+// ตรวจสอบว่า JSON ถูกต้องก่อนแปลง
+try {
+  const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
+  console.log("Google Credentials Loaded:", credentials); // ตรวจสอบค่าที่โหลด
+} catch (err) {
+  console.error("Error parsing GOOGLE_APPLICATION_CREDENTIALS_JSON:", err.message);
+  process.exit(1); // หยุดโปรแกรมถ้า JSON ไม่ถูกต้อง
+}
+
+// ดึงค่าจาก .env
 const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
 
 const auth = new google.auth.GoogleAuth({
     credentials: credentials,
     scopes: ['https://www.googleapis.com/auth/drive'],
 });
+console.log("Google Credentials Loaded Successfully");
 
-require('dotenv').config(); // ใช้ dotenv สำหรับโหลด Environment Variable
+require('dotenv').config(); // โหลด .env
 
-const mongoURI = process.env.MONGODB_URI;
 
-mongoose.connect(mongoURI, { 
-  useNewUrlParser: true, 
-  useUnifiedTopology: true 
-})
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('Error connecting to MongoDB:', err));
+
+console.log("MongoDB URI:", mongoURI); // ตรวจสอบ URI
+
+console.log("MongoDB URI:", process.env.MONGODB_URI);
+console.log("Google JSON Credentials:", process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
+
+if (!process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
+    console.error("Error: GOOGLE_APPLICATION_CREDENTIALS_JSON is not defined in .env");
+    process.exit(1);
+}
+
+// เชื่อมต่อ MongoDB
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("Connected to MongoDB"))
+  .catch(err => console.error("Error connecting to MongoDB:", err));
 
 
 app.get('/favicon.ico', (req, res) => res.status(204).end());
 
 
-// Schema และ Model
-// Schema และ Model
+
 const userSchema = new mongoose.Schema({
   id: String,
   name: String,
@@ -57,10 +88,15 @@ app.use(express.static(path.join(__dirname, "../Frontend")));
 
 // Google Drive API Setup
   // ข้อมูลรับรองสำหรับเชื่อมต่อ Google API
-const CLIENT_ID = '552441800024-7ish9lkaemfgvp96pmank43enfb2b9du.apps.googleusercontent.com';
-const CLIENT_SECRET = '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';
+// ดึงค่าจาก .env
+
+const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+const REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN;
+
+  
 const REDIRECT_URL = 'https://developers.google.com/oauthplayground';
-const REFRESH_TOKEN = '1//04crhN0_E5NoJCgYIARAAGAQSNwF-L9IraJNkd6m6ckdPBrMPtT0D7vnZ4RzGogg_yiRESXCUVrKbYUltOJiekwts19ah0hyvWkk';
+
 
 const oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URL);
 oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
