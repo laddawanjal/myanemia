@@ -39,7 +39,7 @@ const auth = new google.auth.GoogleAuth({
 });
 console.log("Google Credentials Loaded Successfully");
 
-require('dotenv').config(); // โหลด .env
+
 
 
 
