@@ -79,8 +79,8 @@
   }
   loadModel();
 
-  // --- Section 3: การวิเคราะห์รูปภาพ ---
-  document.getElementById("predictButton").addEventListener("click", async () => {
+  // --- Section 3: การวิเคราะห์รูปภาพ --- 
+document.getElementById("predictButton").addEventListener("click", async () => {
   try {
     const finalImageSrc = sessionStorage.getItem("capturedImage");
     const phone = sessionStorage.getItem("phone");
@@ -97,12 +97,27 @@
       .toFloat()
       .expandDims();
 
-    const prediction = await model.predict(tensor).data();
-    const predictedClass = prediction.indexOf(Math.max(...prediction));
+    const predictions = [];
 
+    // ทำการวิเคราะห์ซ้ำ 3 รอบ
+    for (let i = 0; i < 3; i++) {
+      const prediction = await model.predict(tensor).data();
+      const predictedClass = prediction.indexOf(Math.max(...prediction));
+      predictions.push(predictedClass);
+
+      // แสดงผลใน log terminal ทุกครั้ง
+      const metadataResponse = await fetch("./model/metadata.json");
+      const metadata = await metadataResponse.json();
+      const resultMessage = metadata.labels[predictedClass] || "ไม่สามารถระบุผลลัพธ์ได้";
+
+      console.log(`ผลการวิเคราะห์รอบที่ ${i + 1}:`, resultMessage);
+    }
+
+    // ใช้ผลการทำนายรอบสุดท้ายเพื่อแสดงผลในหน้าเว็บ
+    const finalPrediction = predictions[predictions.length - 1];
     const metadataResponse = await fetch("./model/metadata.json");
     const metadata = await metadataResponse.json();
-    const resultMessage = metadata.labels[predictedClass] || "ไม่สามารถระบุผลลัพธ์ได้";
+    const resultMessage = metadata.labels[finalPrediction] || "ไม่สามารถระบุผลลัพธ์ได้";
 
     // กำหนดข้อความภาษาไทยและสี
     let thaiMessage = "";
@@ -133,7 +148,7 @@
     });
 
     if (response.ok) {
-      
+      // อัปโหลดสำเร็จ
     } else {
       const errorResult = await response.json();
       alert(errorResult.message || "เกิดข้อผิดพลาดในการอัปโหลด");
@@ -144,6 +159,7 @@
       "<p>เกิดข้อผิดพลาดในการวิเคราะห์</p>";
   }
 });
+
 
 
   function loadImageFromSrc(src) {
