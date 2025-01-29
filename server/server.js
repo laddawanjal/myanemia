@@ -8,14 +8,14 @@ const { google } = require("googleapis");
 
 const app = express();
 const PORT = 3009;
-
+require('dotenv').config(); // โหลดไฟล์ .env
 
 if (!process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
   console.error("Error: GOOGLE_APPLICATION_CREDENTIALS_JSON is not set in .env");
   process.exit(1); // หยุดโปรแกรมถ้าไม่มีค่า
 }
 
-const mongoURI = process.env.MONGODB_URI || "mongodb://jal065771:jal065771@127.0.0.1:27017/webFormDB"; // ใช้ค่า default ถ้าไม่มีค่าใน .env
+const mongoURI = "mongodb://jal065771:jal065771@127.0.0.1:27017/webFormDB";
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Error connecting to MongoDB:', err));
@@ -39,7 +39,7 @@ const auth = new google.auth.GoogleAuth({
 });
 console.log("Google Credentials Loaded Successfully");
 
-
+require('dotenv').config(); // โหลด .env
 
 
 
