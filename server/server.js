@@ -368,6 +368,8 @@ async function renameFile(fileId, newFileName) {
 // เสิร์ฟไฟล์ Static
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+
 // Start Server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
