@@ -1,7 +1,16 @@
-# Ignore environment files
-.env
-# Ignore dependencies
-node_modules/
-
 # Ignore logs
 *.log
+
+# Ignore environment files
+.env
+
+# Ignore config and sensitive JSON files
+config.js
+credentials.json
+*.json
+
+# Specifically ignore sensitive Google credentials
+anemia-448514-95a1fabcd96d.json
+
+# Ignore node_modules
+node_modules/
