@@ -9,5 +9,8 @@ node_modules/
 
 # Ignore sensitive files
 *.json
+# Ignore sensitive files
 anemia-448514-95a1fabcd96d.json
-* text=auto
+
+# Ignore dependencies
+node_modules/
