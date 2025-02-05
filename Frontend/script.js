@@ -41,46 +41,10 @@ document.querySelector("#submission-form").addEventListener("submit", async (e) 
     console.error("Error submitting form:", error);
     alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
   }
+
+  const API_URL = "http://localhost:3009"; // URL ของ Backend
+
 });
-
-
-
-
-// //function confirmImage() {
-//   const capturedImage = sessionStorage.getItem("capturedImage"); // รูปภาพจาก sessionStorage
-//   const phone = sessionStorage.getItem("phone"); // เบอร์โทรจาก sessionStorage
-
-//   if (!capturedImage || !phone) {
-//     alert("ไม่มีข้อมูลที่จำเป็นสำหรับการบันทึกรูปภาพ");
-//     return;
-//   }
-
-//   fetch("/api/add-image", {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify({ phone, image: capturedImage }),
-//   })
-//     .then((response) => response.json())
-//     .then((result) => {
-//       if (result.url) {
-//         alert("รูปภาพถูกบันทึกเรียบร้อยแล้ว!");
-//         window.location.href = "index7.html"; // ไปยังหน้าถัดไป
-//       } else {
-//         alert(result.message || "เกิดข้อผิดพลาด");
-//       }
-//     })
-//     .catch((error) => {
-//       console.error("Error adding image:", error);
-//       alert("เกิดข้อผิดพลาดในการบันทึกรูปภาพ");
-//     });
-// }
-
-
-
-
-
 
 
 
